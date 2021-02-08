@@ -41,19 +41,21 @@ public class FlightService {
 		}
 	}
 	
+	public Optional<Flights> getSpecificFlight(String Number){
+		return Optional.ofNullable(flightDAO.getFlightWithNumber(Number.toUpperCase())); // .toUpperCase() used to add case-insensitivity
+	}
+	
 	public List<Flights> getAllFlightsDepartingFromAirport(String airportid){
-		return flightDAO.getAllFlightsDepartingFromAirport(airportid);
+		return flightDAO.getAllFlightsDepartingFromAirport(airportid.toUpperCase());
 	}
 	
 	public List<Flights> getAllFlightsArrivingToAirport(String airportid){
-		return flightDAO.getAllFlightsArrivingToAirport(airportid);
+		return flightDAO.getAllFlightsArrivingToAirport(airportid.toUpperCase());
 	}
 
-//	public List<Flights> getSpecificAirport(String airportIdentifier) {
-//		List<String> tempList = new ArrayList<String>();
-//		tempList.add(airportIdentifier);
-//		return flightDAO.findAllById(tempList);
-//	}
+	public List<Flights> getAllFlightsBetweenAirports(String airportid1, String airportid2){
+		return flightDAO.getAllFlightsBetweenAirports(airportid1.toUpperCase(), airportid2.toUpperCase());
+	}
 
 	public String addAirport(Flights newAirport) {
 		try {

@@ -20,7 +20,7 @@ import javax.persistence.*;
 @Table(name="flights_instance")
 public class Flights implements Serializable{
 
-	private static final long serialVersionUID = 57838917848L;
+	private static final long serialVersionUID = 1L;
 	
     @Id
     @Column(name="id")
@@ -42,15 +42,36 @@ public class Flights implements Serializable{
 			inverseJoinColumns = @JoinColumn(name = "bookings_id"))
 	private List<Bookings> bookings;
     
-    @ManyToOne
-    private Airports arrival_city;
-    @ManyToOne
-    private Airports destination_city;
-  
+    @Column
+    private String arrival_city;
+
+	@Column
+    private String departure_city;
+
+
+	public void setArrival_city(String arrival_city) {
+		this.arrival_city = arrival_city;
+	}
+
+	public void setDeparture_city(String departure_city) {
+		this.departure_city = departure_city;
+	}
+
+	public String getArrival_city() {
+		return arrival_city;
+	}
+
+
+	public String getDeparture_city() {
+		return departure_city;
+	}
+
+
 	@Override
 	public String toString() {
 		return "Flights [id=" + id + ", departure_time=" + departure_time + ", capacity=" + capacity + ", price="
-				+ price + ", arrival_time=" + arrival_time + ", flight_number=" + flight_number + "]";
+				+ price + ", arrival_time=" + arrival_time + ", flight_number=" + flight_number + ", arrival_city="
+				+ arrival_city + ", departure_city=" + departure_city + "]";
 	}
 
 
@@ -118,11 +139,12 @@ public class Flights implements Serializable{
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((arrival_city == null) ? 0 : arrival_city.hashCode());
 		result = prime * result + ((arrival_time == null) ? 0 : arrival_time.hashCode());
 		result = prime * result + capacity;
+		result = prime * result + ((departure_city == null) ? 0 : departure_city.hashCode());
 		result = prime * result + ((departure_time == null) ? 0 : departure_time.hashCode());
 		result = prime * result + ((flight_number == null) ? 0 : flight_number.hashCode());
-		result = prime * result + id;
 		result = prime * result + ((price == null) ? 0 : price.hashCode());
 		return result;
 	}
@@ -137,12 +159,22 @@ public class Flights implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		Flights other = (Flights) obj;
+		if (arrival_city == null) {
+			if (other.arrival_city != null)
+				return false;
+		} else if (!arrival_city.equals(other.arrival_city))
+			return false;
 		if (arrival_time == null) {
 			if (other.arrival_time != null)
 				return false;
 		} else if (!arrival_time.equals(other.arrival_time))
 			return false;
 		if (capacity != other.capacity)
+			return false;
+		if (departure_city == null) {
+			if (other.departure_city != null)
+				return false;
+		} else if (!departure_city.equals(other.departure_city))
 			return false;
 		if (departure_time == null) {
 			if (other.departure_time != null)
@@ -153,8 +185,6 @@ public class Flights implements Serializable{
 			if (other.flight_number != null)
 				return false;
 		} else if (!flight_number.equals(other.flight_number))
-			return false;
-		if (id != other.id)
 			return false;
 		if (price == null) {
 			if (other.price != null)
