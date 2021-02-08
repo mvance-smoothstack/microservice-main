@@ -36,7 +36,7 @@ public class BookingsController {
 		if (myBooking == null) {
 			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 		} else {
-			return ResponseEntity.ok(myBooking);
+			return new ResponseEntity<Bookings>(myBooking, HttpStatus.OK);
 		}
 	}
 	
@@ -62,7 +62,24 @@ public class BookingsController {
 			//return 500 error if saving failed somehow
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		} else {
-			return ResponseEntity.ok(myNewBooking);
+			return new ResponseEntity<Bookings>(myNewBooking, HttpStatus.CREATED);
+		}
+	}
+	
+	@PutMapping(path = {"/cancel/{bookingId}"},produces= {"application/json", "application/xml"})
+	public ResponseEntity<Bookings> cancelBookingById(@PathVariable("bookingId") int bookingId) {
+		Bookings myBooking = bookingsService.getBookingById(bookingId);
+		if (myBooking == null) {
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		} else {
+			if (myBooking.getIsActive() == 0) {	//if not active
+				return new ResponseEntity<>(null, HttpStatus.NOT_MODIFIED);
+			} else {
+				//TODO: fire off a request to the payment processor to refund the booking, if we get to that
+				myBooking.setIsActive(0);
+				bookingsService.insertBooking(myBooking);
+				return new ResponseEntity<Bookings>(myBooking, HttpStatus.OK);
+			}
 		}
 	}
 }
